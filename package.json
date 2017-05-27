@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "dist-server/server.js",
   "description": "HPE Hackaton -  Dashboard",
-  "repository": "",
+  "repository": "https://github.com/damianjaniszewski/hackaton.git",
   "license": "MIT",
   "scripts": {
     "test": "grommet check",
