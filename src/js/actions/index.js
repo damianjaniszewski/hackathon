@@ -8,6 +8,8 @@ export const SESSION_LOGOUT = 'SESSION_LOGOUT';
 // Dashboard
 export const DASHBOARD_LOAD = 'DASHBOARD_LOAD';
 export const DASHBOARD_UNLOAD = 'DASHBOARD_UNLOAD';
+export const PUBLISH_LOAD = 'PUBLISH_LOAD';
+export const PUBLISH_UNLOAD = 'PUBLISH_UNLOAD';
 
 // Nav
 export const NAV_ACTIVATE = 'NAV_ACTIVATE';

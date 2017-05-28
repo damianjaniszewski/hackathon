@@ -6,5 +6,9 @@ module.exports = {
   EventsD: 'Komunikat?w',
   Sensor: 'Czujnik',
   Sensors: 'Czujniki',
-  SensorsD: 'Czujnik?w'
+  SensorsD: 'Czujnik?w',
+  Publish: 'Publikuj',
+  Cancel: 'Przerwij',
+  Message: 'Komunikat',
+  PublishtoQueue: 'Publikuj do kolejki'
 };

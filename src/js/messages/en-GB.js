@@ -6,5 +6,9 @@ module.exports = {
   EventsD: 'Events',
   Sensor: 'Sensor',
   Sensors: 'Sensors',
-  SensorsD: 'Sensors'
+  SensorsD: 'Sensors',
+  Publish: 'Publish',
+  Cancel: 'Cancel',
+  Message: 'Message',
+  PublishtoQueue: 'Publish to Queue'
 };

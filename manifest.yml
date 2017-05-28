@@ -7,14 +7,6 @@ applications:
   timeout: 30
   stackato:
     description: HPE Hackaton - Dashboard
-    autoscale:
-      enabled: true
-      instances:
-        min: 1
-        max: 8
-      cpu:
-        min: 40
-        max: 60
     # hooks:
       # pre-push:
       # - npm run dist
