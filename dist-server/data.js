@@ -27,40 +27,35 @@ var _notifiers = {
 var events = exports.events = [];
 
 _dotenv2.default.config({ silent: true });
-console.log('RABBITMQ_URL: ' + process.env.RABBITMQ_URL);
+// console.log('RABBITMQ_URL: '+process.env.RABBITMQ_URL);
 
 var _printError = function _printError(err) {
   console.log(err.message);
 };
 
 var _gotEvent = function _gotEvent(event) {
-  console.log('event> ' + event.body.sensorId + '.' + event.body.sensorType + ' (' + event.body.sensorLat + ', ' + event.body.sensorLng + '): ' + event.body.sensorState);
-  // console.log(JSON.stringify(message.body));
-  // console.log('');
+  // Print messages to stdout
+  console.log('event> ' + event.eventTime + ' ' + event.message);
 
-  events.unshift(event.body);
+  events.unshift(event);
   _notifiers.event.forEach(function (notifier) {
     return notifier(event);
   });
 };
 
-var _connection = _amqp2.default.createConnection({ url: process.env.RABBITMQ_URL });
-// const _connection = amqp.createConnection({ url: "amqp://uicR37SEDpTnQ:pH0HTOPmHf917@195.69.209.29:25001/vb7ac1138d0ae48db9530655b19db61f0"});
-
-// const _client = Client.fromConnectionString(_connectionString);
-//
-// _client.open()
-//     .then(_client.getPartitionIds.bind(_client))
-//     .then(function (partitionIds) {
-//         return partitionIds.map(function (partitionId) {
-//             return _client.createReceiver('$Default', partitionId, { 'startAfterTime' : Date.now()-2*24*60*60*1000}).then(function(receiver) {
-//                 console.log('Created partition receiver: ' + partitionId)
-//                 receiver.on('errorReceived', _printError);
-//                 receiver.on('message', _gotEvent);
-//             });
-//         });
-//     })
-//     .catch(_printError);
+var _connection = _amqp2.default.createConnection({ url: process.env.RABBITMQ_URL }).on('error', function (e) {
+  return _printError(e);
+}).on('ready', function () {
+  // Use the default 'amq.topic' exchange
+  _connection.queue('messages', { durable: true, autoDelete: false, exclusive: false }, function (q) {
+    // Catch all messages
+    q.bind('#');
+    // Receive messages
+    q.subscribe(function (message) {
+      return _gotEvent({ eventTime: Date.now(), message: message.data.toString('utf8') });
+    });
+  });
+});
 
 function addSession(token, data) {
   _sessions[token] = data;
@@ -74,16 +69,7 @@ function addNotifier(type, cb) {
   _notifiers[type].push(cb);
 }
 
-function getEvents(filters) {
-  if (filters) {
-    return Promise.resolve({
-      events: events.filter(function (event) {
-        return Object.keys(filters).some(function (filter) {
-          return event[filter] === filters[filter];
-        });
-      })
-    });
-  }
+function getEvents() {
   return Promise.resolve({ events: events });
 }
 

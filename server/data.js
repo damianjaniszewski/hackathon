@@ -9,34 +9,29 @@ const _notifiers = {
 export const events = [];
 
 dotenv.config({silent: true});
-console.log('RABBITMQ_URL: '+process.env.RABBITMQ_URL);
+// console.log('RABBITMQ_URL: '+process.env.RABBITMQ_URL);
 
 var _printError = function (err) {
   console.log(err.message);
 };
 
 var _gotEvent = function (event) {
-  console.log('event> '+event.body.sensorId+'.'+event.body.sensorType+' ('+event.body.sensorLat+', '+event.body.sensorLng+'): '+event.body.sensorState);
- // console.log(JSON.stringify(message.body));
- // console.log('');
+  // Print messages to stdout
+  console.log('event> ' + event.eventTime + ' ' + event.message);
 
-  events.unshift(event.body);
+  events.unshift(event);
   _notifiers.event.forEach(notifier => notifier(event));
 };
 
-
 const _connection = amqp.createConnection({ url: process.env.RABBITMQ_URL })
-  .on('error', (e) => _printError(e))
-  .on('ready',  () => {
+  .on('error', e => _printError(e))
+  .on('ready', () => {
     // Use the default 'amq.topic' exchange
-    _connection.queue('messages', (q) => {
+    _connection.queue('messages', {durable: true, autoDelete: false, exclusive: false}, q => {
       // Catch all messages
       q.bind('#');
       // Receive messages
-      q.subscribe((message) => {
-        // Print messages to stdout
-        console.log(message);
-      })
+      q.subscribe(message => _gotEvent({eventTime: Date.now(), message: message.data.toString('utf8')}))
     })
   });
 
@@ -52,14 +47,7 @@ export function addNotifier(type, cb) {
   _notifiers[type].push(cb);
 }
 
-export function getEvents(filters) {
-  if (filters) {
-    return Promise.resolve({
-      events: events.filter(event =>
-        Object.keys(filters).some(filter => event[filter] === filters[filter])
-      )
-    });
-  }
+export function getEvents() {
   return Promise.resolve({ events });
 }
 

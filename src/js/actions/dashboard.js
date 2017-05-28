@@ -1,9 +1,9 @@
 import { DASHBOARD_LOAD, DASHBOARD_UNLOAD } from '../actions';
-import { watchDashboard, unwatchDashboard } from '../api/dashboard';
+import { watchEvents, unwatchEvents } from '../api/dashboard';
 
 export function loadDashboardEvents() {
   return dispatch => (
-    watchDashboard()
+    watchEvents()
       .on('success',
         payload => dispatch({ type: DASHBOARD_LOAD, payload })
       )
@@ -15,6 +15,6 @@ export function loadDashboardEvents() {
 }
 
 export function unloadDashboardEvents() {
-  unwatchDashboard();
+  unwatchEvents();
   return { type: DASHBOARD_UNLOAD };
 }

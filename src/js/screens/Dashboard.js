@@ -60,17 +60,14 @@ class Dashboard extends Component {
       dashboardNode = (
         <Box direction='row' responsive={false}
           pad={{ between: 'small', horizontal: 'medium', vertical: 'medium' }}>
-          <Spinning /><span>Loading...</span>
+          <Spinning /><span>Waiting...</span>
         </Box>
       );
     } else {
       const eventsNode = (events || []).map((event, index) => (
         <TableRow key={index} justify='between' pad={{ horizontal: 'medium', vertical: 'none', between: 'small' }} separator='none'>
-            <td><Label margin='none' align='end'>{(new Date(sensor.eventTime)).getFullYear() +"-"+ ("0" + (new Date(sensor.eventTime)).getMonth()).slice(-2) +"-"+ ("0" + (new Date(sensor.eventTime)).getDate()).slice(-2) + " " + ("0" + (new Date(sensor.eventTime)).getHours()).slice(-2) + ":" + ("0" + (new Date(sensor.eventTime)).getMinutes()).slice(-2) + ":"  + ("0" + (new Date(sensor.eventTime)).getSeconds()).slice(-2)}</Label></td>
-            <td><CheckBox checked={sensor.sensorState == '0' ? false : true} toggle={false} disabled={true} /></td>
-            <td><Label margin='none'><Anchor path={`/sensor/${sensor.sensorId}`} label={sensor.sensorId} /></Label></td>
-            <td><Label margin='none' align='end'>{sensor.sensorLat}</Label></td>
-            <td><Label margin='none' align='end'>{sensor.sensorLng}</Label></td>
+            <td><Label margin='none' align='end'>{(new Date(event.eventTime)).getFullYear() +"-"+ ("0" + (new Date(event.eventTime)).getMonth()).slice(-2) +"-"+ ("0" + (new Date(event.eventTime)).getDate()).slice(-2) + " " + ("0" + (new Date(event.eventTime)).getHours()).slice(-2) + ":" + ("0" + (new Date(event.eventTime)).getMinutes()).slice(-2) + ":"  + ("0" + (new Date(event.eventTime)).getSeconds()).slice(-2)}</Label></td>
+            <td><Label margin='none'><strong>{event.message}</strong></Label></td>
         </TableRow>
       ));
 
@@ -78,10 +75,10 @@ class Dashboard extends Component {
         <Box direction='column' align='start' pad={{horizontal: 'medium', vertical: 'small'}} full='horizontal'>
           <Table>
             <thead>
-              <tr><th>Time</th><th>State</th><th>ID</th><th>Lat</th><th>Lng</th></tr>
+              <tr><th>Time</th><th>Message</th></tr>
             </thead>
             <tbody>
-              {sensorsNode}
+              {eventsNode}
             </tbody>
           </Table>
         </Box>

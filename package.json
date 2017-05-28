@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "test": "grommet check",
-    "dev-server": "nodemon ./server/dev",
+    "dev-server": "npm run dist-server && nodemon ./server/dev",
     "dev": "cross-env NODE_ENV=development grommet pack",
     "dist-client": "cross-env NODE_ENV=production grommet pack",
     "dist-server": "babel -d ./dist-server ./server -s",
